@@ -5,7 +5,11 @@ language: java
 jdk:
   - openjdk11
 
-script: ./mvnw clean install
+install:
+- mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+script:
+- mvn test
 
 notifications:
     email: omoniyi24@gmail.com
@@ -13,3 +17,8 @@ notifications:
     
 # command for github to recognize ./mvnw is
 # git update-index --chmod=+x mvnw
+
+
+#C:\Program Files (x86)\Common Files\Oracle\Java\javapath
+
+#C:\ProgramData\DockerDesktop\version-bin
