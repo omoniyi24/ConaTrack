@@ -1,0 +1,15 @@
+# Set the language
+language: java
+
+# Set the Java version
+jdk:
+  - openjdk11
+
+script: ./mvnw clean install
+
+notifications:
+    email: omoniyi24@gmail.com
+    
+    
+# command for github to recognize ./mvnw is
+# git update-index --chmod=+x mvnw
