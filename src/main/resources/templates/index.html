@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="utf-8">
@@ -55,25 +55,17 @@
         <div class="row align-items-center">
 
           <div class="col-6 col-lg-2">
-            <h1 class="mb-0 site-logo"><a href="index.html" class="mb-0">ConaTrack</a></h1>
+            <h1 class="mb-0 site-logo"><a th:href="@{/}" class="mb-0">ConaTrack</a></h1>
           </div>
 
           <div class="col-12 col-md-10 d-none d-lg-block">
             <nav class="site-navigation position-relative text-right" role="navigation">
 
               <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
-                <li class="active"><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="features.html" class="nav-link">Features</a></li>
-                <li><a href="pricing.html" class="nav-link">Pricing</a></li>
-
-                <li class="has-children">
-                  <a href="blog.html" class="nav-link">Blog</a>
-                  <ul class="dropdown">
-                    <li><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li><a href="blog-single.html" class="nav-link">Blog Sigle</a></li>
-                  </ul>
-                </li>
-                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li class="active"><a th:href="@{/}" class="nav-link">Home</a></li>
+                <li><a th:href="@{/features}" class="nav-link">Features</a></li>
+                <li><a th:href="@{/displayCases}" class="nav-link">Cases</a></li>
+                <li><a th:href="@{/contact}" class="nav-link">Contact</a></li>
               </ul>
             </nav>
           </div>
@@ -115,10 +107,10 @@
             <div class="col-12 hero-text-image">
               <div class="row">
                 <div class="col-lg-7 text-center text-lg-left">
-                  <h1 data-aos="fade-right">Get Latest Update On Corona Virus</h1>
+                  <h1 data-aos="fade-right">Get Latest Update On Covid-19 Virus</h1>
                   <p class="mb-5" data-aos="fade-right" data-aos-delay="100">keep yourself safe...</p>
                   <p data-aos="fade-right" data-aos-delay="200" data-aos-offset="-500"><a th:href="@{/displayCases}"
-                      class="btn btn-outline-white">Get started</a></p>
+                      class="btn btn-outline-white">See Cases</a></p>
                 </div>
                 <div class="col-lg-5 iphone-wrap">
                   <img src="img/phone_1.png" alt="Image" class="phone-1" data-aos="fade-right">
@@ -344,7 +336,7 @@
         <div class="container">
           <div class="row align-items-center">
             <div class="col-md-6 mr-auto text-center text-md-left mb-5 mb-md-0">
-              <h2>Starts Publishing Your Apps</h2>
+              <h2>Start Using Our Apps</h2>
             </div>
             <div class="col-md-5 text-center text-md-right">
               <p><a href="#" class="btn"><span class="icofont-brand-apple mr-3"></span>App store</a> <a href="#"
@@ -375,9 +367,8 @@
               <div class="col-md-4 mb-4 mb-md-0">
                 <h3>Navigation</h3>
                 <ul class="list-unstyled">
-                  <li><a href="#">Pricing</a></li>
                   <li><a href="#">Features</a></li>
-                  <li><a href="#">Blog</a></li>
+                  <li><a href="#">Cases</a></li>
                   <li><a href="#">Contact</a></li>
                 </ul>
               </div>
@@ -411,7 +402,7 @@
                 Licensing information: https://bootstrapmade.com/license/
                 Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=SoftLand
               -->
-              Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+              Designed by <a href="https://omoniyi24.github.io/">Omoniyi24</a>
             </div>
           </div>
         </div>

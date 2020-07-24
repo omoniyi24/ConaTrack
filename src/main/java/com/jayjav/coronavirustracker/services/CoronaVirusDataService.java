@@ -1,20 +1,20 @@
 package com.jayjav.coronavirustracker.services;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import com.jayjav.coronavirustracker.models.LocationStats;
+import com.jayjav.coronavirustracker.dto.LocationStats;
+import com.jayjav.coronavirustracker.enums.APIResponseCode;
+import com.jayjav.coronavirustracker.response.LocationStatsResponse;
+import com.jayjav.coronavirustracker.util.RequestCasesOnline;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CoronaVirusDataService {
 
-    private static String VIRUS_DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
+    private static final Logger LOGGER = LoggerFactory.getLogger(CoronaVirusDataService.class);
+
+    @Autowired
+    private RequestCasesOnline requestCasesOnline;
 
     public List<LocationStats> getAllStats() {
         return allStats;
@@ -37,54 +40,63 @@ public class CoronaVirusDataService {
     @PostConstruct
     @Scheduled(cron = "* * 1 * * *")
     public void fetchVirusData() {
+        LOGGER.info("[+] Code in fetchVirusData()");
         try {
-            List<LocationStats> newStats = new ArrayList<>();
-            StringReader reader = callThirdPartyForData();
-            Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(reader);
-            for (CSVRecord record : records) {
-				LocationStats locationStats = new LocationStats();
-				locationStats.setState(record.get("Province/State"));
-				locationStats.setCountry("Country/Region");
-//				System.out.println("?>>>>>>>>>>>>>>>>>>>>");
-//				System.out.println(record.get(record.size()-1));
-				int latestCases = Integer.parseInt(record.get(record.size()-1));
-				int prevDayCases = Integer.parseInt(record.get(record.size()-2));
-				locationStats.setLatestTotalCases(latestCases);
-				locationStats.setDiffFromPrevDay(latestCases - prevDayCases);
-                newStats.add(locationStats);
-            }
-            this.allStats = newStats;
-
+            this.allStats = getLocationStats().getLocationStatsList();
+            LOGGER.info("[+] Executed fetchVirusData() with no Error");
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            LOGGER.info(String.format("[-] Executed fetchVirusData() with Error %s", e.getMessage()));
         }
-
     }
 
-    public StringReader  callThirdPartyForData() {
-        StringReader reader = null;
+    public LocationStatsResponse getLocationStats(){
+        LOGGER.info("[+] Code in getLocationStats()");
+        List<LocationStats> newStats = new ArrayList<>();
+        String responseCode;
+        String responseMessage;
+        int count = 0;
         try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(VIRUS_DATA_URL))
-                    .build();
-
-            HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
-            reader = new StringReader(httpResponse.body());
-
-        }catch (Exception e){
+            StringReader reader = requestCasesOnline.callThirdPartyForData();
+            Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(reader);
+            for (CSVRecord record : records) {
+                count++;
+                LocationStats locationStats = new LocationStats();
+                locationStats.setId(count);
+                locationStats.setState(record.get("Province/State"));
+                locationStats.setCountry(record.get("Country/Region"));
+                int latestCases = Integer.parseInt(record.get(record.size()-1));
+                int prevDayCases = Integer.parseInt(record.get(record.size()-2));
+                locationStats.setLatestTotalCases(latestCases);
+                locationStats.setDiffFromPrevDay(latestCases - prevDayCases);
+                newStats.add(locationStats);
+            }
+            LOGGER.info("[+] Executed getLocationStats() with no Error");
+        } catch (Exception e) {
             e.printStackTrace();
+            LOGGER.info(String.format("[-] Executed getLocationStats() with Error %s", e.getMessage()));
         }
-        return reader;
+        if (!newStats.isEmpty()){
+            responseCode = APIResponseCode.SUCCESS.getCode();
+            responseMessage = APIResponseCode.SUCCESS.getDescription();
+            LOGGER.info("[+] Leaving getLocationStats() with {}",responseCode);
+            return new LocationStatsResponse(responseCode, responseMessage, newStats);
+        }else {
+            responseCode = APIResponseCode.FAILED.getCode();
+            responseMessage = APIResponseCode.FAILED.getDescription();
+            LOGGER.info("[-] Leaving getLocationStats() with {}",responseCode);
+            return new LocationStatsResponse(responseCode, responseMessage, null);
+        }
     }
 
     public int getTotalReportedCases() {
-        return allStats.stream().mapToInt(stats -> stats.getLatestTotalCases()).sum();
+        LOGGER.info("[+] Code in getTotalReportedCases()");
+        return allStats.stream().mapToInt(LocationStats::getLatestTotalCases).sum();
     }
 
     public int getTotalNewCases() {
-        return allStats.stream().mapToInt(stats -> stats.getDiffFromPrevDay()).sum();
+        LOGGER.info("[+] Code in getTotalNewCases()");
+        return allStats.stream().mapToInt(LocationStats::getDiffFromPrevDay).sum();
     }
 
 

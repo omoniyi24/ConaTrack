@@ -22,6 +22,22 @@ public class CoronaVirusDataController {
         model.addAttribute("locationStats", coronaVirusDataService.getAllStats());
         model.addAttribute("totalReportedCases", coronaVirusDataService.getTotalReportedCases());
         model.addAttribute("newTotalReportedCases", coronaVirusDataService.getTotalNewCases());
-        return "home";
+        return "display-cases";
     }
+
+    @GetMapping("/contact")
+    public String contact(Model model){
+        return "contact";
+    }
+
+    @GetMapping("/features")
+    public String features(Model model){
+        return "features";
+    }
+
+    @GetMapping("/blog")
+    public String blog(Model model){
+        return "blog";
+    }
+
 }
