@@ -33,7 +33,9 @@ public class EmailService {
                 if(reportResponse.getResponseCode() == APIResponseCode.SUCCESS.getCode()){
                     boolean mailSent = emailUtil.sendReport(toAddress, reportResponse.getPathToReport());
                     if(mailSent){
-                        return new EmailResponse(responseCode, responseMessage, null);
+                        responseCode = APIResponseCode.SUCCESS.getCode();
+                        responseMessage = APIResponseCode.SUCCESS.getDescription();
+                        return new EmailResponse(responseCode, responseMessage, reportResponse.getPathToReport());
                     }
                 }
             }else {
