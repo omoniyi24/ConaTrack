@@ -4,7 +4,7 @@
 
 ConaTrack is a web application(also provides RESTful web service) that helps to limit the spread of coronavirus by it ability to trace the virus' journey around the world in real time.
 
-[![ConaTrack](https://res.cloudinary.com/omoniyi24/image/upload/v1595600474/Screenshot_2020-07-24_at_15.15.27_xrormc.png)](https://omoniyi24.github.io/)
+[![ConaTrack](https://res.cloudinary.com/omoniyi24/image/upload/v1595600474/Screenshot_2020-07-24_at_15.15.27_xrormc.png)](https://conatrack-deployment.herokuapp.com/)
 
 # Features
 
@@ -23,6 +23,7 @@ ConaTrack is a web application(also provides RESTful web service) that helps to 
 - Sonarlint was used with IntelliJ to ensure great code quality
 - Docker for containerization
 - For continuous integration, build and release management. Automatation of builds, testing, and release cycle (Travis CI)
+- Heroku for Deployment
 - Frontend: ConaTrack renders HTML5 and CSS.
 
 ### Todos
