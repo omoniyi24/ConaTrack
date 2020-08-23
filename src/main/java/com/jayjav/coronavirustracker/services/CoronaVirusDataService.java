@@ -1,7 +1,10 @@
 package com.jayjav.coronavirustracker.services;
 
+import java.awt.print.Pageable;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -70,6 +73,8 @@ public class CoronaVirusDataService {
                 locationStats.setLatestTotalCases(latestCases);
                 locationStats.setDiffFromPrevDay(latestCases - prevDayCases);
                 newStats.add(locationStats);
+                newStats = getPage(newStats, 1, 7);
+
             }
             LOGGER.info("[+] Executed getLocationStats() with no Error");
         } catch (Exception e) {
@@ -99,5 +104,16 @@ public class CoronaVirusDataService {
         return allStats.stream().mapToInt(LocationStats::getDiffFromPrevDay).sum();
     }
 
+    public static <T> List<T> getPage(List<T> sourceList, int page, int pageSize) {
+        if(pageSize <= 0 || page <= 0) {
+            throw new IllegalArgumentException("invalid page size: " + pageSize);
+        }
+        int fromIndex = (page - 1) * pageSize;
+        if(sourceList == null || sourceList.size() < fromIndex){
+            return Collections.emptyList();
+        }
+        // toIndex exclusive
+        return sourceList.subList(fromIndex, Math.min(fromIndex + pageSize, sourceList.size()));
+    }
 
 }

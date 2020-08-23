@@ -31,12 +31,10 @@ public class EmailService {
             if(!locationStats.isEmpty()){
                 ReportResponse reportResponse = pdfGenerator.generateJasperReport(locationStats, reportFormat);
                 if(reportResponse.getResponseCode() == APIResponseCode.SUCCESS.getCode()){
-                    boolean mailSent = emailUtil.sendReport(toAddress, reportResponse.getPathToReport());
-                    if(mailSent){
+                    emailUtil.sendReport(toAddress, reportResponse.getPathToReport());
                         responseCode = APIResponseCode.SUCCESS.getCode();
                         responseMessage = APIResponseCode.SUCCESS.getDescription();
                         return new EmailResponse(responseCode, responseMessage, reportResponse.getPathToReport());
-                    }
                 }
             }else {
                 responseCode = APIResponseCode.FAILED.getCode();

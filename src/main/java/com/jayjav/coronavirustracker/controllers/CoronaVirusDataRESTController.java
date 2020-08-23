@@ -11,10 +11,7 @@ import com.jayjav.coronavirustracker.services.EmailService;
 import com.jayjav.coronavirustracker.services.ReportService;
 import com.jayjav.coronavirustracker.util.EmailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/conatrack")
@@ -36,6 +33,23 @@ public class CoronaVirusDataRESTController {
         response.setStatus(Status.FAIL);
         try {
             LocationStatsResponse locationStats = coronaVirusDataService.getLocationStats();
+            if(locationStats.getResponseCode().equals(APIResponseCode.SUCCESS.getCode())){
+                response.setStatus(Status.SUCCESS);
+                response.setData(locationStats);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    @GetMapping("/paginate/cases")
+    public BaseResponse<LocationStatsResponse> getAllCasesPaginated(@RequestParam("start") int start, @RequestParam("size") int size){
+        BaseResponse<LocationStatsResponse> response = new BaseResponse<>();
+        response.setStatus(Status.FAIL);
+        try {
+            LocationStatsResponse locationStats = coronaVirusDataService.getLocationStats();
+            locationStats.setLocationStatsList(coronaVirusDataService.getPage(locationStats.getLocationStatsList(), start, size));
             if(locationStats.getResponseCode().equals(APIResponseCode.SUCCESS.getCode())){
                 response.setStatus(Status.SUCCESS);
                 response.setData(locationStats);
